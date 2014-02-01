@@ -7,12 +7,12 @@ $(window).load(function ()
 		this.setPos = function (x, y) {
 			if (LoLCamera.map.inBound(x, y))
 			{
-	-			this.v.setPos(x, y);
-	-			this.$.css({
-	-				left : (x - this.$.width()/2), 
-	-				top  : (y - this.$.height()), 
-	-				position : 'relative'
-	-			});
+				this.v.setPos(x, y);
+				this.$.css({
+					left : (x - this.$.width()/2), 
+					top  : (y - this.$.height()), 
+					position : 'relative'
+				});
 			}
 		};
 		
@@ -29,7 +29,6 @@ $(window).load(function ()
 			this.h = $("#map").height();
 			
 			this.inBound = function (x, y) {
-				console.log("x="+x+"/y="+y);
 				return (
 					(x >= 0 && x <= LoLCamera.map.w)
 				&&	(y >= 0 && y <= LoLCamera.map.h)
