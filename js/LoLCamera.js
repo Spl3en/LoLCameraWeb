@@ -1,22 +1,46 @@
 $(window).load(function ()
 {
 	function Champion (x, y) {
-		this.v = new Vector2D(x, y, 1.0);
+		this.vec2D = new Vector2D(x, y, 1.0);
 		this.$ = $("#champion");
+		this.speed = 400.0;
+		this.dest = new Vector2D(this.vec2D.x, this.vec2D.y);
 		
 		this.setPos = function (x, y) {
-			if (LoLCamera.map.inBound(x, y))
-			{
-				this.v.setPos(x, y);
-				this.$.css({
-					left : (x - this.$.width()/2), 
-					top  : (y - this.$.height()), 
-					position : 'relative'
-				});
+			this.vec2D.setPos(x, y);
+			this.$.css({
+				left : (x - this.$.width()/2), 
+				top  : (y - this.$.height()), 
+				position : 'relative'
+			});
+		};
+		
+		this.setPosSmooth = function (x, y) {
+			var speed = 0.03;
+			var threshold = 1.0;
+			var dx = x - this.vec2D.x;
+			var dy = y - this.vec2D.y;
+			
+			// Smoothing
+			x = this.vec2D.x;
+			y = this.vec2D.y;
+			if (Math.abs(dx) > threshold)
+				x += (dx) * speed;
+			if (Math.abs(dy) > threshold)
+				y += (dy) * speed;
+			
+			this.setPos(x, y);
+		};
+			
+		
+		this.go = function (x, y) {
+			if (LoLCamera.map.inBound(x, y)) {
+				this.dest.setPos(x, y);
 			}
 		};
 		
-		this.draw = function () {
+		this.update = function () {
+			this.setPosSmooth(this.dest.x, this.dest.y);
 		};
 	}
 	
@@ -37,14 +61,14 @@ $(window).load(function ()
 		};
 		
 		this.champ = new Champion(this.map.w / 2, this.map.h / 2);
-		this.mouse = new Vector2D(this.champ.v.x, this.champ.v.y, 1.0);
+		this.mouse = new Vector2D(this.champ.vec2D.x, this.champ.vec2D.y, 1.0);
 
 		this.camera = new function () 
 		{
 			this.$ = $('#screen');
 			this.vec2D = new Vector2D (
 				// Focused on champion by default
-				LoLCamera.champ.v.x, LoLCamera.champ.v.y, 1.0
+				LoLCamera.champ.vec2D.x, LoLCamera.champ.vec2D.y, 1.0
 			);
 			
 			this.setScrollPos = function (x, y) {
@@ -84,34 +108,44 @@ $(window).load(function ()
 				
 				this.setPos(x, y);
 			};
+			
+			this.update = function () {
+				var mouse = LoLCamera.mouse;
+				var champ = LoLCamera.champ.vec2D;
+				var weight_sum = mouse.weight + champ.weight;
+				this.setPosSmooth (
+					(   ((mouse.x) * mouse.weight)
+					  +	((champ.x) * champ.weight)
+					) / weight_sum,
+					
+					(   ((mouse.y) * mouse.weight)
+					  +	((champ.y) * champ.weight)
+					) / weight_sum
+				);
+			}
 		};
 		
-		this.setWorldPos = function (entity, x, y) {
-			entity.setPos(
-				this.camera.vec2D.x - ($(window).width()  / 2) + x, 
-				this.camera.vec2D.y - ($(window).height() / 2) + y
-			);
+		this.setWorldPos = function (object, x, y) {
+			var worldX = this.camera.vec2D.x - ($(window).width()  / 2) + x;
+			var worldY = this.camera.vec2D.y - ($(window).height() / 2) + y;
+			
+			if (object instanceof Vector2D) {
+				object.setPos(worldX, worldY);
+			}
+				
+			else if (object instanceof Champion) {
+				object.go(worldX, worldY);
+			}
 		}
 	};
 	
 	// DRAW
-	function main ()
+	function update ()
 	{
-		var mouse = LoLCamera.mouse;
-		var champ = LoLCamera.champ.v;
-		var weight_sum = mouse.weight + champ.weight;
-		
-		LoLCamera.camera.setPosSmooth (
-			(   ((mouse.x) * mouse.weight)
-			  +	((champ.x) * champ.weight)
-			) / weight_sum,
-			
-			(   ((mouse.y) * mouse.weight)
-			  +	((champ.y) * champ.weight)
-			) / weight_sum
-		);
+		LoLCamera.camera.update();
+		LoLCamera.champ.update();
 	}
-	setInterval(main, 1000.0 / 60.0);
+	setInterval(update, 1000.0 / 60.0);
 	
 	$(document).mousemove(function(event) {
 		LoLCamera.setWorldPos(LoLCamera.mouse, event.pageX, event.pageY);
