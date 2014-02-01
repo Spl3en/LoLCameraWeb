@@ -1,10 +1,10 @@
 $(window).load(function ()
 {
 	function Champion (x, y) {
-		this.vec2D = new Vector2D(x, y, 1.0);
-		this.$ = $("#champion");
 		this.speed = 0.01;
+		this.vec2D = new Vector2D(x, y, 1.0);
 		this.dest = new Vector2D(this.vec2D.x, this.vec2D.y, 1.0);
+		this.$ = $("#champion");
 		
 		this.setPos = function (x, y) {
 			this.$.css({
@@ -15,7 +15,7 @@ $(window).load(function ()
 		};
 		
 		this.setPosSmooth = function (x, y) {
-			this.vec2D.setPosSmooth(x, y, this.speed, 1.0);
+			this.vec2D.setPosSmooth(x, y, this.speed, 10.0);
 			this.setPos(this.vec2D.x, this.vec2D.y);
 		};
 		
