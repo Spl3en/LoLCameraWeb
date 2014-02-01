@@ -51,7 +51,7 @@ $(window).load(function ()
 
 		this.camera = new function () 
 		{
-			var speed = 0.01;
+			this.speed = 0.01;
 			
 			this.$ = $('#screen');
 			this.vec2D = new Vector2D (
@@ -76,7 +76,7 @@ $(window).load(function ()
 			};
 			
 			this.setPosSmoothSpeed = function (x, y) {
-				this.vec2D.setPosSmoothSpeed(x, y, 0.03, 0.01, 20.0);
+				this.vec2D.setPosSmoothSpeed(x, y, 0.03, this.speed, 20.0);
 				this.setPos(this.vec2D.x, this.vec2D.y);
 			};
 			
