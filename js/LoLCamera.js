@@ -3,11 +3,10 @@ $(window).load(function ()
 	function Champion (x, y) {
 		this.vec2D = new Vector2D(x, y, 1.0);
 		this.$ = $("#champion");
-		this.speed = 400.0;
-		this.dest = new Vector2D(this.vec2D.x, this.vec2D.y);
+		this.speed = 0.01;
+		this.dest = new Vector2D(this.vec2D.x, this.vec2D.y, 1.0);
 		
 		this.setPos = function (x, y) {
-			this.vec2D.setPos(x, y);
 			this.$.css({
 				left : (x - this.$.width()/2), 
 				top  : (y - this.$.height()), 
@@ -16,22 +15,9 @@ $(window).load(function ()
 		};
 		
 		this.setPosSmooth = function (x, y) {
-			var speed = 0.03;
-			var threshold = 1.0;
-			var dx = x - this.vec2D.x;
-			var dy = y - this.vec2D.y;
-			
-			// Smoothing
-			x = this.vec2D.x;
-			y = this.vec2D.y;
-			if (Math.abs(dx) > threshold)
-				x += (dx) * speed;
-			if (Math.abs(dy) > threshold)
-				y += (dy) * speed;
-			
-			this.setPos(x, y);
+			this.vec2D.setPosSmooth(x, y, this.speed, 1.0);
+			this.setPos(this.vec2D.x, this.vec2D.y);
 		};
-			
 		
 		this.go = function (x, y) {
 			if (LoLCamera.map.inBound(x, y)) {
@@ -65,6 +51,8 @@ $(window).load(function ()
 
 		this.camera = new function () 
 		{
+			var speed = 0.01;
+			
 			this.$ = $('#screen');
 			this.vec2D = new Vector2D (
 				// Focused on champion by default
@@ -87,39 +75,25 @@ $(window).load(function ()
 				}
 			};
 			
-			this.setPosSmooth = function (x, y) {
-				var speed = 0.03;
-				var threshold = 100.0;
-				var dx = x - this.vec2D.x;
-				var dy = y - this.vec2D.y;
-				
-				// Scroll speed
-				var dist_target_cam = new Vector2D(x, y).distance(this.vec2D);
-				if (dist_target_cam > threshold)
-					speed *= ((dist_target_cam - threshold) * 0.03);
-
-				// Smoothing
-				x = this.vec2D.x;
-				y = this.vec2D.y;
-				if (Math.abs(dx) > threshold)
-					x += (dx) * speed;
-				if (Math.abs(dy) > threshold)
-					y += (dy) * speed;
-				
-				this.setPos(x, y);
+			this.setPosSmoothSpeed = function (x, y) {
+				this.vec2D.setPosSmoothSpeed(x, y, 0.03, 0.01, 20.0);
+				this.setPos(this.vec2D.x, this.vec2D.y);
 			};
 			
 			this.update = function () {
 				var mouse = LoLCamera.mouse;
 				var champ = LoLCamera.champ.vec2D;
-				var weight_sum = mouse.weight + champ.weight;
-				this.setPosSmooth (
+				var dest  = LoLCamera.champ.dest;
+				var weight_sum = mouse.weight + champ.weight + dest.weight;
+				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)
 					  +	((champ.x) * champ.weight)
+					  +	((dest.x)  * dest.weight)
 					) / weight_sum,
 					
 					(   ((mouse.y) * mouse.weight)
 					  +	((champ.y) * champ.weight)
+					  +	((dest.y)  * dest.weight)
 					) / weight_sum
 				);
 			}

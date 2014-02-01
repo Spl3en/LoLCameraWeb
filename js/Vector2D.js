@@ -9,6 +9,34 @@ function Vector2D (x, y, weight)
 		this.y = y;
 	};
 	
+	this.setPosSmooth = function (x, y, speed, threshold) {
+		var dx = x - this.x;
+		var dy = y - this.y;
+		
+		// Smoothing
+		if (Math.abs(dx) > threshold)
+			this.x += (dx) * speed;
+		if (Math.abs(dy) > threshold)
+			this.y += (dy) * speed;
+	};
+	
+	this.setPosSmoothSpeed = function (x, y, speed, speedBoost, threshold) {
+		var dx = x - this.x;
+		var dy = y - this.y;
+		
+		// Scroll speed
+		var between = this.distance(new Vector2D(x, y));
+		if (between > threshold)
+			speed *= ((between - threshold) * speedBoost);
+
+		// Smoothing
+		if (Math.abs(dx) > threshold)
+			this.x += (dx) * speed;
+		if (Math.abs(dy) > threshold)
+			this.y += (dy) * speed;
+	};
+			
+	
 	this.add = function (targetX, targetY) {
 		this.x += targetX;
 		this.y += targetY;
