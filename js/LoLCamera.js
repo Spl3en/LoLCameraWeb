@@ -5,12 +5,15 @@ $(window).load(function ()
 		this.$ = $("#champion");
 		
 		this.setPos = function (x, y) {
-			this.v.setPos(x, y);
-			this.$.css({
-				left : (x - this.$.width()/2), 
-				top  : (y - this.$.height()), 
-				position : 'relative'
-			});
+			if (LoLCamera.map.inBound(x, y))
+			{
+	-			this.v.setPos(x, y);
+	-			this.$.css({
+	-				left : (x - this.$.width()/2), 
+	-				top  : (y - this.$.height()), 
+	-				position : 'relative'
+	-			});
+			}
 		};
 		
 		this.draw = function () {
@@ -24,6 +27,14 @@ $(window).load(function ()
 		this.map = new function () {
 			this.w = $("#map").width();
 			this.h = $("#map").height();
+			
+			this.inBound = function (x, y) {
+				console.log("x="+x+"/y="+y);
+				return (
+					(x >= 0 && x <= LoLCamera.map.w)
+				&&	(y >= 0 && y <= LoLCamera.map.h)
+				);
+			};
 		};
 		
 		this.champ = new Champion(this.map.w / 2, this.map.h / 2);
