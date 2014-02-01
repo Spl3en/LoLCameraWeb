@@ -1,0 +1,85 @@
+body, html {
+	padding : 0px;
+	margin  : 0px;
+	background-color : black;
+	overflow: auto;
+	width:100%;
+	height:100%;
+}
+
+#screen {
+	width : 100%;
+	height : 100%;
+	overflow:auto;
+}
+
+#interface {
+	width : inherit;
+	height : inherit;
+}
+
+#interface-n {
+	position : absolute;
+	top : 0px;
+	left : 0px;
+	width : 100%;
+	height : 25px;
+	background-color : black;
+	z-index : 2;
+}
+
+#interface-s {
+	position : absolute;
+	bottom : 0px;
+	left : 0px;
+	width : 100%;
+	height : 25px;
+	background-color : black;
+	z-index : 2;
+}
+
+#interface-e {
+	position : absolute;
+	top : 0px;
+	right : 0px;
+	width : 25px;
+	height : 100%;
+	background-color : black;
+	z-index : 2;
+}
+
+
+#interface-w {
+	position : absolute;
+	top : 0px;
+	left : 0px;
+	width : 25px;
+	height : 100%;
+	background-color : black;
+	z-index : 2;
+}
+
+
+#map {
+	background : url('../img/map.jpg') no-repeat;
+	
+	/* Size */
+	width  : 5000px;
+	height : 4000px;
+	
+	z-index : 0;
+}
+
+#champion {
+	background : url('../img/nidalee.png') no-repeat;
+	
+	width  : 100px;
+	height : 114px;
+	
+	position : relative;
+	left : 2400px;
+	top : 1900px;
+	
+	z-index : 1;
+}
+
