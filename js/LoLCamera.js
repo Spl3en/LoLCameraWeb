@@ -52,6 +52,7 @@ $(window).load(function ()
 		this.camera = new function () 
 		{
 			this.speed = 0.01;
+			this.threshold = 50.0;
 			
 			this.$ = $('#screen');
 			this.vec2D = new Vector2D (
@@ -67,16 +68,13 @@ $(window).load(function ()
 			};
 			
 			this.setPos = function (x, y) {
-				if (x > 0 && y > 0) {
-					var dx = x - this.vec2D.x;
-					var dy = y - this.vec2D.y;
-					this.setScrollPos(x, y);
-					LoLCamera.mouse.add(dx, dy);
-				}
+				var dx = x - this.vec2D.x;
+				var dy = y - this.vec2D.y;
+				this.setScrollPos(x, y);
 			};
 			
 			this.setPosSmoothSpeed = function (x, y) {
-				this.vec2D.setPosSmoothSpeed(x, y, 0.03, this.speed, 20.0);
+				this.vec2D.setPosSmoothSpeed(x, y, 0.03, this.speed, this.threshold);
 				this.setPos(this.vec2D.x, this.vec2D.y);
 			};
 			
@@ -85,6 +83,7 @@ $(window).load(function ()
 				var champ = LoLCamera.champ.vec2D;
 				var dest  = LoLCamera.champ.dest;
 				var weight_sum = mouse.weight + champ.weight + dest.weight;
+				var oldPos = this.vec2D.copy();
 				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)
 					  +	((champ.x) * champ.weight)
@@ -96,6 +95,8 @@ $(window).load(function ()
 					  +	((dest.y)  * dest.weight)
 					) / weight_sum
 				);
+				
+				LoLCamera.mouse.add(oldPos.x - this.vec2D.x, oldPos.y - this.vec2D.y);
 			}
 		};
 		

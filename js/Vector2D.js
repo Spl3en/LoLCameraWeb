@@ -37,9 +37,9 @@ function Vector2D (x, y, weight)
 	};
 			
 	
-	this.add = function (targetX, targetY) {
-		this.x += targetX;
-		this.y += targetY;
+	this.add = function (dx, dy) {
+		this.x += dx;
+		this.y += dy;
 	};
 	
 	this.distance = function (v2) {
@@ -49,6 +49,10 @@ function Vector2D (x, y, weight)
 				 Math.pow(this.y - v2.y, 2)
 			)
 		);
+	};
+	
+	this.copy = function () {
+		return new Vector2D(this.x, this.y, this.weight);
 	};
 	
 	this.debug = function (object) {
