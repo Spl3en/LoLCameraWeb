@@ -101,8 +101,10 @@ $(window).load(function ()
 		};
 		
 		this.setWorldPos = function (object, x, y) {
-			var worldX = this.camera.vec2D.x - ($(window).width()  / 2) + x;
-			var worldY = this.camera.vec2D.y - ($(window).height() / 2) + y;
+			var pos = this.getWorldPos(x, y);
+			return pos;
+			var worldX = pos.x;
+			var worldY = pos.y
 			
 			if (object instanceof Vector2D) {
 				object.setPos(worldX, worldY);
@@ -111,6 +113,13 @@ $(window).load(function ()
 			else if (object instanceof Champion) {
 				object.go(worldX, worldY);
 			}
+		},
+		
+		this.getWorldPos = function (x, y) {
+			return {
+				x : this.camera.vec2D.x - ($(window).width()  / 2) + x,
+				y : this.camera.vec2D.y - ($(window).height() / 2) + y
+			};
 		}
 	};
 	
@@ -123,11 +132,13 @@ $(window).load(function ()
 	setInterval(update, 1000.0 / 60.0);
 	
 	$(document).mousemove(function(event) {
-		LoLCamera.setWorldPos(LoLCamera.mouse, event.pageX, event.pageY);
+		var pos = LoLCamera.getWorldPos(event.pageX, event.pageY);
+		LoLCamera.mouse.setPos(pos.x, pos.y);
 	});
 	
 	$(document).click(function(event) {
-		LoLCamera.setWorldPos(LoLCamera.champ, event.pageX, event.pageY);
+		var pos = LoLCamera.getWorldPos(event.pageX, event.pageY);
+		LoLCamera.champ.go(pos.x, pos.y);
 	});
 	
 	$(document).scroll(function(event) {
