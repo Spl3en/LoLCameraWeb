@@ -125,8 +125,7 @@ $(window).load(function ()
 	};
 	
 	// DRAW
-	function update ()
-	{
+	function update () {
 		LoLCamera.camera.update();
 		LoLCamera.champ.update();
 	}
@@ -134,7 +133,7 @@ $(window).load(function ()
 	
 	$(document).mousemove(function(event) {
 		var pos = LoLCamera.getWorldPos(event.pageX, event.pageY);
-		LoLCamera.mouse.setPos(pos.x, pos.y);
+		LoLCamera.mouse.vec2D.setPos(pos.x, pos.y);
 	});
 	
 	$(document).click(function(event) {
