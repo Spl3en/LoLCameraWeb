@@ -60,6 +60,9 @@ function Vector2D (x, y, weight)
 		this.y = vector.y;
 	};
 	
+	this.draw = function () {
+	};
+	
 	this.debug = function (object) {
 		console.log((object || "null") + " : {" + this.x + ", " + this.y + "}");
 	};

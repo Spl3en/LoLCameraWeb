@@ -39,16 +39,9 @@ $(window).load(function ()
 	
 	function Mouse (x, y)  {
 		this.vec2D = new Vector2D(x, y, 1.0);
-		this.last  = {
-			x : x,
-			y : y
-		};
 		
 		this.update = function () {
-			var cur = LoLCamera.camera.vec2D;
-			var old = LoLCamera.camera.oldPos;
-			this.vec2D.add (old.x - cur.x, old.y - cur.y);
-			old.copy(cur);
+			this.vec2D.draw();
 		}
 	}
 	
@@ -92,8 +85,6 @@ $(window).load(function ()
 			};
 			
 			this.setPos = function (x, y) {
-				var dx = x - this.vec2D.x;
-				var dy = y - this.vec2D.y;
 				this.setScrollPos(x, y);
 			};
 			
@@ -107,6 +98,8 @@ $(window).load(function ()
 				var champ = LoLCamera.champ.vec2D;
 				var dest  = LoLCamera.champ.dest;
 				var weight_sum = mouse.weight + champ.weight + dest.weight;
+				
+				this.oldPos.copy(this.vec2D);
 				
 				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)

@@ -15,6 +15,7 @@
 
 <body>
 <div id="screen">
+	<div id="mouse"></div>
 	<div id="interface">
 					<div id="interface-n"></div>
 		<div id="interface-w"></div><div id="interface-e"></div>

@@ -13,6 +13,15 @@ body, html {
 	overflow:auto;
 }
 
+#mouse {
+	width : 32px;
+	height : 31px;
+	position : absolute;
+	top : 0px;
+	left : 0px;
+	z-index : 3;
+}
+
 #interface {
 	width : inherit;
 	height : inherit;
