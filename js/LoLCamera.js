@@ -100,21 +100,6 @@ $(window).load(function ()
 			}
 		};
 		
-		this.setWorldPos = function (object, x, y) {
-			var pos = this.getWorldPos(x, y);
-			return pos;
-			var worldX = pos.x;
-			var worldY = pos.y
-			
-			if (object instanceof Vector2D) {
-				object.setPos(worldX, worldY);
-			}
-				
-			else if (object instanceof Champion) {
-				object.go(worldX, worldY);
-			}
-		},
-		
 		this.getWorldPos = function (x, y) {
 			return {
 				x : this.camera.vec2D.x - ($(window).width()  / 2) + x,
