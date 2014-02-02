@@ -5,6 +5,7 @@ body, html {
 	overflow: auto;
 	width:100%;
 	height:100%;
+	cursor: none;
 }
 
 #screen {
@@ -14,6 +15,7 @@ body, html {
 }
 
 #mouse {
+	background : url('../img/cursor.png') no-repeat;
 	width : 32px;
 	height : 31px;
 	position : absolute;

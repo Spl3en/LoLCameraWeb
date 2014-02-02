@@ -39,10 +39,31 @@ $(window).load(function ()
 	
 	function Mouse (x, y)  {
 		this.vec2D = new Vector2D(x, y, 1.0);
+		this.$ = $("#mouse");
 		
 		this.update = function () {
-			this.vec2D.draw();
-		}
+			var lastDistance = LoLCamera.camera.lastDistance;
+			
+			if (lastDistance.x <= 1000.0 && lastDistance.y <= 1000.0)
+			{
+				this.vec2D.add(lastDistance.x, lastDistance.y);
+				this.setPos(this.vec2D.x, this.vec2D.y);
+			}
+		};
+		
+		this.setPos = function (x, y) {
+			this.vec2D.setPos(x, y);
+			this.$.css({
+				left : (x), 
+				top  : (y), 
+				position : 'relative'
+			});
+		};
+		
+		this.onMove = function (x, y) {
+			var pos = LoLCamera.getWorldPos(x, y);
+			this.setPos(pos.x, pos.y);
+		};
 	}
 	
 	var LoLCamera = new function ()
@@ -75,7 +96,8 @@ $(window).load(function ()
 				// Focused on champion by default
 				LoLCamera.champ.vec2D.x, LoLCamera.champ.vec2D.y, 1.0
 			);
-			this.oldPos = this.vec2D.clone();
+			this.last = new Vector2D(this.$.scrollLeft(), this.$.scrollTop());
+			this.lastDistance = new Vector2D();
 			
 			this.setScrollPos = function (x, y) {
 				this.vec2D.x = x;
@@ -99,7 +121,13 @@ $(window).load(function ()
 				var dest  = LoLCamera.champ.dest;
 				var weight_sum = mouse.weight + champ.weight + dest.weight;
 				
-				this.oldPos.copy(this.vec2D);
+				var cur = {
+					x : this.$.scrollLeft(),
+					y : this.$.scrollTop()
+				};
+				
+				this.lastDistance.setPos(cur.x - this.last.x, cur.y - this.last.y);
+				this.last.copy(cur);
 				
 				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)
@@ -132,8 +160,11 @@ $(window).load(function ()
 	setInterval(update, 1000.0 / 60.0);
 	
 	$(document).mousemove(function(event) {
-		var pos = LoLCamera.getWorldPos(event.pageX, event.pageY);
-		LoLCamera.mouse.vec2D.setPos(pos.x, pos.y);
+		LoLCamera.mouse.onMove(event.pageX, event.pageY);
+	});
+	
+	$(document).hover(function(event) {
+		LoLCamera.mouse.onMove(event.pageX, event.pageY);
 	});
 	
 	$(document).click(function(event) {

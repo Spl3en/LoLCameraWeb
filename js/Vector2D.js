@@ -36,7 +36,6 @@ function Vector2D (x, y, weight)
 			this.y += (dy) * speed;
 	};
 			
-	
 	this.add = function (dx, dy) {
 		this.x += dx;
 		this.y += dy;
