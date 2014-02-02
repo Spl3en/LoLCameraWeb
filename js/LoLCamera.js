@@ -1,5 +1,6 @@
 $(window).load(function ()
 {
+	/* Champion Class */
 	function Champion (x, y) {
 		this.speed = 0.01;
 		this.vec2D = new Vector2D(x, y, 1.0);
@@ -14,11 +15,17 @@ $(window).load(function ()
 			});
 		};
 		
+		/**
+		 *	Set position champion with a smooth factor
+		 */
 		this.setPosSmooth = function (x, y) {
 			this.vec2D.setPosSmooth(x, y, this.speed, 10.0);
 			this.setPos(this.vec2D.x, this.vec2D.y);
 		};
 		
+		/**
+		 *	Order to the entity to move to move to a certain point
+		 */
 		this.go = function (x, y) {
 			if (LoLCamera.map.inBound(x, y)) {
 				this.dest.setPos(x, y);
@@ -27,6 +34,14 @@ $(window).load(function ()
 		
 		this.update = function () {
 			this.setPosSmooth(this.dest.x, this.dest.y);
+		};
+	}
+	
+	function Mouse (x, y)  {
+		this.vec2D = new Vector2D(x, y, 1.0);
+		this.last  = {
+			x : x,
+			y : y
 		};
 	}
 	
@@ -47,7 +62,7 @@ $(window).load(function ()
 		};
 		
 		this.champ = new Champion(this.map.w / 2, this.map.h / 2);
-		this.mouse = new Vector2D(this.champ.vec2D.x, this.champ.vec2D.y, 1.0);
+		this.mouse = new Mouse(this.champ.vec2D.x, this.champ.vec2D.y);
 
 		this.camera = new function () 
 		{
@@ -79,11 +94,12 @@ $(window).load(function ()
 			};
 			
 			this.update = function () {
-				var mouse = LoLCamera.mouse;
+				var mouse = LoLCamera.mouse.vec2D;
 				var champ = LoLCamera.champ.vec2D;
 				var dest  = LoLCamera.champ.dest;
 				var weight_sum = mouse.weight + champ.weight + dest.weight;
 				var oldPos = this.vec2D.copy();
+				
 				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)
 					  +	((champ.x) * champ.weight)
@@ -96,7 +112,7 @@ $(window).load(function ()
 					) / weight_sum
 				);
 				
-				LoLCamera.mouse.add(oldPos.x - this.vec2D.x, oldPos.y - this.vec2D.y);
+				LoLCamera.mouse.vec2D.add (oldPos.x - this.vec2D.x, oldPos.y - this.vec2D.y);
 			}
 		};
 		
