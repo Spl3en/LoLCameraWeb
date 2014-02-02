@@ -51,8 +51,13 @@ function Vector2D (x, y, weight)
 		);
 	};
 	
-	this.copy = function () {
+	this.clone = function () {
 		return new Vector2D(this.x, this.y, this.weight);
+	};
+	
+	this.copy = function (vector) {
+		this.x = vector.x;
+		this.y = vector.y;
 	};
 	
 	this.debug = function (object) {

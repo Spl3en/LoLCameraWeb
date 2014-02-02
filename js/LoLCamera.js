@@ -43,6 +43,13 @@ $(window).load(function ()
 			x : x,
 			y : y
 		};
+		
+		this.update = function () {
+			var cur = LoLCamera.camera.vec2D;
+			var old = LoLCamera.camera.oldPos;
+			this.vec2D.add (old.x - cur.x, old.y - cur.y);
+			old.copy(cur);
+		}
 	}
 	
 	var LoLCamera = new function ()
@@ -75,6 +82,7 @@ $(window).load(function ()
 				// Focused on champion by default
 				LoLCamera.champ.vec2D.x, LoLCamera.champ.vec2D.y, 1.0
 			);
+			this.oldPos = this.vec2D.clone();
 			
 			this.setScrollPos = function (x, y) {
 				this.vec2D.x = x;
@@ -99,7 +107,6 @@ $(window).load(function ()
 				var champ = LoLCamera.champ.vec2D;
 				var dest  = LoLCamera.champ.dest;
 				var weight_sum = mouse.weight + champ.weight + dest.weight;
-				var oldPos = this.vec2D.copy();
 				
 				this.setPosSmoothSpeed (
 					(   ((mouse.x) * mouse.weight)
@@ -112,8 +119,6 @@ $(window).load(function ()
 					  +	((dest.y)  * dest.weight)
 					) / weight_sum
 				);
-				
-				LoLCamera.mouse.vec2D.add (oldPos.x - this.vec2D.x, oldPos.y - this.vec2D.y);
 			}
 		};
 		
@@ -129,6 +134,7 @@ $(window).load(function ()
 	function update () {
 		LoLCamera.camera.update();
 		LoLCamera.champ.update();
+		LoLCamera.mouse.update();
 	}
 	setInterval(update, 1000.0 / 60.0);
 	
