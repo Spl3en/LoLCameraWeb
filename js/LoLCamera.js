@@ -68,6 +68,7 @@ $(window).load(function ()
 		{
 			this.speed = 0.01;
 			this.threshold = 50.0;
+			this.smoothSpeed = 0.03;
 			
 			this.$ = $('#screen');
 			this.vec2D = new Vector2D (
@@ -89,7 +90,7 @@ $(window).load(function ()
 			};
 			
 			this.setPosSmoothSpeed = function (x, y) {
-				this.vec2D.setPosSmoothSpeed(x, y, 0.03, this.speed, this.threshold);
+				this.vec2D.setPosSmoothSpeed(x, y, this.smoothSpeed, this.speed, this.threshold);
 				this.setPos(this.vec2D.x, this.vec2D.y);
 			};
 			
